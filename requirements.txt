@@ -1,0 +1,5 @@
+streamlit
+python-dotenv
+groq
+PyMuPDF
+youtube_transcript_api

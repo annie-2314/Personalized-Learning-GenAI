@@ -1,0 +1,6 @@
+venv/
+.env
+*.pyc
+__pycache__/
+learning_data.db
+revision_notes.pdf
