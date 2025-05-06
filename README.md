@@ -1,57 +1,70 @@
 # 📚 Personal Learning Assistant GenAI
 
-An AI-powered interactive learning assistant that helps students learn smarter by summarizing content, generating adaptive quizzes, and planning revisions using memory-based spaced repetition.
+An AI-powered interactive learning platform that helps students learn smarter by summarizing YouTube videos, PDFs, and raw text, generating adaptive quizzes and revision notes, and planning spaced repetition-based revisions.
+## 📸 Project Screenshots
+
+<p align="center">
+  <img src="assets/ss1.png" width="500"/> 
+  <img src="assets/ss2.png" width="500"/> 
+  <img src="assets/ss3.png" width="500"/> 
+  <img src="assets/ss4.png" width="500"/> 
+</p>
+<p align="center">
+  <img src="assets/ss6.png" width="500"/> 
+  <img src="assets/ss7.png" width="500"/> 
+  <img src="assets/dashboardss.png" width="500"/> 
+</p>
+
 ## 📹 Demo Video
-[Download Video](app/demo video.mp4)
+[Download Video](assests/demo video.mp4)
 
 
-## 🚀 Features
+🚀 Key Features
+🔹 📥 Multi-Format Input & Smart Summarization
+→ Upload YouTube links, PDF documents, or raw text
+→ AI summarizes key concepts using advanced LLMs
 
-🔹 **Content Upload**
-- Upload **PDFs**, **YouTube transcripts**, or **raw text notes**
-- Automatically extract and summarize core concepts using LLMs
+🔹 🧠 Personalized Quiz Generator
+→ Auto-generates MCQs, Fill-in-the-Blanks, and Short Answers
+→ Adapts difficulty (Easy, Medium, Hard) based on content depth
 
-🔹 **Quiz Generator**
-- Personalized quizzes based on uploaded content
-- Supports **MCQs**, **Fill-in-the-Blanks**, and **Short Answer** types
-- Difficulty levels: *Easy*, *Medium*, *Hard*
+🔹 📝 AI-Powered Revision Notes
+→ Instant generation of short summaries or detailed notes
+→ Supports PDF download for offline access
 
-🔹 **Revision Notes**
-- Generate **quick summaries** or **detailed notes** on any topic
-- Option to **download notes as PDF**
+🔹 ⏰ Spaced Repetition Scheduler
+→ Tracks learning timelines and retention
+→ Recommends optimal revision time using memory decay algorithms
 
-🔹 **Spaced Repetition Planner**
-- AI schedules your topic reviews based on memory retention
-- Encourages long-term learning and recall
+🔹 🔍 Semantic Search Engine
+→ Search learned concepts using embeddings
+→ Returns similar topics even if phrased differently
 
-🔹 **Semantic Search**
-- Search previously learned concepts using intelligent embeddings
-- Returns conceptually similar matches even if wording is different
-
+🔹 🤖 AI Assistant Panel
+→ Chat-like in-app support for summarizing, explaining, or reviewing content
+→ Available throughout the learning experience
 ---
 
 ## 🧠 Tech Stack
 
-| Layer              | Tech Used                                   |
-|-------------------|----------------------------------------------|
-| Frontend          | [Streamlit](https://streamlit.io)            |
-| Backend           | [FastAPI (planned for production)]           |
-| GenAI             | Groq Cloud + LLaMA 4 Scout 17B Instruct Model |
-| Summarization     | LLM-based text abstraction (via API)         |
-| Quiz Generation   | Prompt-tuned LLM-based question synthesis     |
-| Embeddings & Search | Vector store + semantic similarity search |
-| Database          | SQLite (for topic tracking and review dates) |
+| Layer                  | Technologies Used                                |
+| ---------------------- | ------------------------------------------------ |
+| **Frontend**           | [Streamlit](https://streamlit.io)                |
+| **Backend**            | FastAPI *(planned for production deployment)*    |
+| **GenAI Engine**       | Groq Cloud + LLaMA 4 Scout 17B Instruct Model    |
+| **Summarization**      | LLM-based abstraction via API                    |
+| **Quiz Generation**    | Prompt-driven custom question generation         |
+| **Search & Embedding** | Vector similarity with semantic matching         |
+| **Database**           | SQLite *(user progress, topics, review history)* |
+
 
 ---
 
 ## 🖼️ UI Highlights
 
-- 📊 Dashboard with retention metrics  
-- 📤 Upload and auto-summarize content  
-- 🧠 Personalized quiz section  
-- 📝 Revision note generator (PDF export)  
-- 🔁 Spaced repetition scheduler  
-- 🔍 Concept search using embeddings  
-
-
-
+- 🏠 Dashboard Overview – Visualizes retention metrics and learning progress 
+- 📤 Upload Panel – Accepts PDFs, YouTube links, or text for summarization
+- 🧠 Quiz Section – Generates personalized quizzes by topic and difficulty
+- 📝 Notes Generator – Creates downloadable revision notes (PDF format)
+- 🔁 Review Planner – Spaced repetition scheduler with memory tracking
+- 🔍 Semantic Search – Finds learned concepts using vector embeddings
