@@ -1,19 +1,17 @@
 # 📚 Personal Learning Assistant GenAI
 
 An AI-powered interactive learning platform that helps students learn smarter by summarizing YouTube videos, PDFs, and raw text, generating adaptive quizzes and revision notes, and planning spaced repetition-based revisions.
-## 📸 Project Screenshots
 
-<p align="center">
-  <img src="assets/ss1.png" width="500"/> 
-  <img src="assets/ss2.png" width="500"/> 
-  <img src="assets/ss3.png" width="500"/> 
-  <img src="assets/ss4.png" width="500"/> 
-</p>
-<p align="center">
-  <img src="assets/ss6.png" width="500"/> 
-  <img src="assets/ss7.png" width="500"/> 
-  <img src="assets/dashboardss.png" width="500"/> 
-</p>
+
+## 📸 Project Screenshots
+| ![ss1](assets/ss1.png) | ![ss2](assets/ss2.png) | ![ss3](assets/ss3.png) | ![ss4](assets/ss4.png) |
+|:----------------------:|:----------------------:|:----------------------:|:----------------------:|
+| **PDF Summarizer**     | **YouTube Link Summarizer** | **Quiz Questions Generator** | **Medium Quiz** |
+
+| ![ss5](assets/ss5.png) | ![ss6](assets/ss6.png) | ![ss7](assets/ss7.png) |
+|:----------------------:|:----------------------:|:----------------------:|
+| **Revision Notes**     | **Assistant**           | **Dashboard**           |
+
 
 ## 📹 Demo Video
 [Download Video](assests/demo video.mp4)
