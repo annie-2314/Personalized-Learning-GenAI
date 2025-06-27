@@ -5,42 +5,33 @@ import fitz  # PyMuPDF
 import asyncio
 from groq import APIStatusError
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from .groq_client import client as groq_async_client # Make sure this imports your async client
-
+from .groq_client import client as groq_async_client # Correctly import the async client
 
 def extract_text_from_pdf(uploaded_file):
     """
     Extracts text from an uploaded Streamlit PDF file object using PyMuPDF.
     This function is SYNCHRONOUS.
     """
-    # Streamlit's uploaded_file provides a file-like object; get its bytes content
-    file_bytes = uploaded_file.getvalue()
-    
+    file_bytes = uploaded_file.getvalue() # Get bytes content from Streamlit UploadedFile
+    file_stream = io.BytesIO(file_bytes) # Wrap bytes in a BytesIO object for PyMuPDF
+
     text = ""
     try:
-        # Pass the raw bytes directly to fitz.open, or use io.BytesIO without .read()
-        # The correct way for in-memory bytes is typically to pass the bytes directly.
-        # Or, pass the io.BytesIO object itself which is a stream.
-        # Let's use io.BytesIO which is robust.
-        file_stream = io.BytesIO(file_bytes)
-        
-        with fitz.open(stream=file_stream, filetype="pdf") as doc: # CORRECTED LINE HERE
+        # Pass the BytesIO object directly to fitz.open (it's a file-like object)
+        with fitz.open(stream=file_stream, filetype="pdf") as doc: # Corrected this line
             for page in doc:
                 extracted_page_text = page.get_text()
                 if extracted_page_text:
                     text += extracted_page_text + "\n"
     except Exception as e:
         print(f"Error extracting text from PDF: {e}")
-        # In a Streamlit app, you might want to log this or provide feedback
-        # st.error("Failed to extract text from PDF.")
-        return "" # Return empty string on error
+        return ""
     return text
 
 
 async def _summarize_chunk_async(chunk, streamlit_ref=None, chunk_num=0, total_chunks=0):
     """
     Helper function to summarize a single text chunk asynchronously using Groq.
-    This is an ASYNCHRONOUS function.
     """
     try:
         if streamlit_ref:
@@ -68,18 +59,16 @@ async def _summarize_chunk_async(chunk, streamlit_ref=None, chunk_num=0, total_c
         print(f"Unexpected error summarizing chunk {chunk_num}: {e}")
         return None
 
-async def summarize_text_async(text, streamlit_ref=None): # This is the main ASYNCHRONOUS summary function
+async def summarize_text_async(text, streamlit_ref=None):
     """
     Summarizes large texts by chunking them and then combining summaries, asynchronously.
     """
     if not text:
         return "No text provided to summarize."
 
-    # Define chunking parameters (adjust as needed for token limits vs. desired chunk size)
-    # 12000 characters is roughly 3000 tokens (approx 4 chars per token)
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=12000,
-        chunk_overlap=200,
+        chunk_size=12000,   # Approx 3000 tokens (1 token ~ 4 chars). Adjust based on model limit.
+        chunk_overlap=200,  # Overlap helps maintain context between chunks
         length_function=len,
         is_separator_regex=False,
     )
@@ -89,7 +78,6 @@ async def summarize_text_async(text, streamlit_ref=None): # This is the main ASY
     if not chunks:
         return "No meaningful chunks could be created from the text."
 
-    # Summarize each chunk concurrently
     tasks = []
     for i, chunk in enumerate(chunks):
         tasks.append(_summarize_chunk_async(chunk, streamlit_ref, i + 1, len(chunks)))
@@ -98,12 +86,10 @@ async def summarize_text_async(text, streamlit_ref=None): # This is the main ASY
         streamlit_ref.info(f"Processing {len(chunks)} text chunks...")
     print(f"Processing {len(chunks)} text chunks...")
 
-    chunk_summaries = await asyncio.gather(*tasks) # AWAIT all chunk summaries
+    chunk_summaries = await asyncio.gather(*tasks)
 
-    # Filter out any None values from failed summaries
     chunk_summaries = [s for s in chunk_summaries if s is not None]
 
-    # Combine or Summarize the Summaries
     if not chunk_summaries:
         return "Could not generate any summaries for the provided text chunks due to errors."
 
@@ -117,7 +103,7 @@ async def summarize_text_async(text, streamlit_ref=None): # This is the main ASY
     print("Combining and finalising summary...")
 
     try:
-        final_summary_response = await groq_async_client.chat.completions.create( # AWAIT IS CRUCIAL HERE
+        final_summary_response = await groq_async_client.chat.completions.create(
             model="llama3-8b-8192",
             messages=[
                 {"role": "system", "content": "Combine the following individual summaries into a comprehensive and cohesive final summary of the original document. Ensure no information is lost from the sub-summaries."},
