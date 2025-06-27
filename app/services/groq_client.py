@@ -1,12 +1,19 @@
+# app/services/groq_client.py
+
 import os
-# from groq import Groq
-from groq import AsyncGroq
-from dotenv import load_dotenv
+from groq import AsyncGroq # Ensure you are importing AsyncGroq
 
-load_dotenv()
-api_key = os.getenv("GROQ_API_KEY")
+# Attempt to get API key from Streamlit secrets or environment variable
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
-if not api_key:
-    raise ValueError("Missing GROQ_API_KEY in environment.")
+# Check Streamlit secrets if not found in environment variables
+if not GROQ_API_KEY and "GROQ_API_KEY" in st.secrets:
+    GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 
-client = AsyncGroq(api_key=api_key)
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY not found. Please set it as an environment variable or in Streamlit secrets.")
+
+# Initialize the asynchronous Groq client
+client = AsyncGroq(
+    api_key=GROQ_API_KEY,
+)
