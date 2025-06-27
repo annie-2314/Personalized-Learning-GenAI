@@ -2,5 +2,8 @@ streamlit
 python-dotenv
 groq
 PyMuPDF
-youtube_transcript_api
 fpdf==1.7.2
+PyMuPDF
+langchain-text-splitters
+youtube-transcript-api
+fpdf
