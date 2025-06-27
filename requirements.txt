@@ -3,3 +3,4 @@ python-dotenv
 groq
 PyMuPDF
 youtube_transcript_api
+fpdf==1.7.2
