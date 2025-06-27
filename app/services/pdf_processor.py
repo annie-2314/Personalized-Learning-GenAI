@@ -1,33 +1,33 @@
-# app/services/pdf_processor.py
+# In app/services/pdf_processor.py
 
 import io
-import fitz  # PyMuPDF <--- ADD THIS IMPORT
+import fitz
 import asyncio
-from groq import APIStatusError # <--- KEEP THIS IMPORT
-from langchain_text_splitters import RecursiveCharacterTextSplitter # <--- KEEP THIS IMPORT
-from .groq_client import client as groq_async_client # <--- KEEP THIS IMPORT (ensure client is AsyncGroq)
+from groq import APIStatusError
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from .groq_client import client as groq_async_client
 
 
 def extract_text_from_pdf(uploaded_file):
     """
     Extracts text from an uploaded Streamlit PDF file object using PyMuPDF.
     """
-    # PyMuPDF works directly with file-like objects or bytes
     file_stream = io.BytesIO(uploaded_file.getvalue())
-    
+
     text = ""
     try:
-        with fitz.open(stream=file_stream.read(), filetype="pdf") as doc:
+        # *** THIS IS THE ONLY LINE TO CHANGE IN THIS FUNCTION ***
+        with fitz.open(stream=file_stream, filetype="pdf") as doc: # <--- REMOVE .read() from file_stream.read()
             for page in doc:
                 extracted_page_text = page.get_text()
                 if extracted_page_text:
                     text += extracted_page_text + "\n"
     except Exception as e:
         print(f"Error extracting text from PDF: {e}")
-        # In a Streamlit app, you might want to log this or provide feedback
-        # st.error("Failed to extract text from PDF.") # Can't use st.error here directly
-        return "" # Return empty string on error
+        return ""
     return text
+
+# ... (the rest of your pdf_processor.py code, including async functions, remains the same) ...
 
 
 async def _summarize_chunk_async(chunk, streamlit_ref=None, chunk_num=0, total_chunks=0):
