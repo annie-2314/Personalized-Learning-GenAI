@@ -7,3 +7,4 @@ PyMuPDF
 langchain-text-splitters
 youtube-transcript-api
 fpdf
+langchain
