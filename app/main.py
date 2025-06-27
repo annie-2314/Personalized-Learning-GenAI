@@ -1,5 +1,5 @@
 import base64
-import asyncio # This is good!
+import asyncio
 import streamlit as st
 from datetime import datetime
 from services import pdf_processor, youtube_processor, quiz_generator
@@ -14,6 +14,7 @@ from services.spaced_repetition import get_review_schedule, mark_reviewed
 database.initialize_db()
 
 st.set_page_config(page_title="Personalized Learning Coach", layout="wide")
+
 def set_bg_from_local(image_file):
     with open(image_file, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
@@ -36,6 +37,7 @@ def set_bg_from_local(image_file):
 
 # Call with correct path
 set_bg_from_local("app/bg2.png")
+
 # Sidebar
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Dashboard", "Upload Content", "Quiz Me", "Revision Notes", "Spaced Repetition Planner", "Search & Explore"])
@@ -65,13 +67,12 @@ elif page == "Upload Content":
     if upload_option == "PDF":
         uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
         if uploaded_pdf:
-            st.info("Extracting text from PDF, please wait...") # Added feedback
+            st.info("Extracting text from PDF, please wait...")
             text = pdf_processor.extract_text_from_pdf(uploaded_pdf)
 
             if text:
-                st.info("Text extracted. Summarizing content using Groq...") # Added feedback
-                # *** FIX THIS LINE ***
-                summary = asyncio.run(pdf_processor.summarize_text_async(text, streamlit_ref=st)) # <--- CORRECTED
+                st.info("Text extracted. Summarizing content using Groq...")
+                summary = asyncio.run(pdf_processor.summarize_text_async(text, streamlit_ref=st))
 
                 if summary:
                     st.success("PDF summarized successfully.")
@@ -85,13 +86,12 @@ elif page == "Upload Content":
     elif upload_option == "YouTube Link":
         yt_link = st.text_input("Paste YouTube Transcript Link:")
         if yt_link:
-            st.info("Fetching YouTube transcript, please wait...") # Added feedback
-            transcript = youtube_processor.fetch_transcript(yt_link, streamlit_ref=st) # Pass streamlit_ref
+            st.info("Fetching YouTube transcript, please wait...")
+            transcript = youtube_processor.fetch_transcript(yt_link, streamlit_ref=st)
 
             if transcript:
-                st.info("Transcript fetched. Summarizing content using Groq...") # Added feedback
-                # *** FIX THIS LINE ***
-                summary = asyncio.run(youtube_processor.summarize_transcript_async(transcript, streamlit_ref=st)) # <--- CORRECTED
+                st.info("Transcript fetched. Summarizing content using Groq...")
+                summary = asyncio.run(youtube_processor.summarize_transcript_async(transcript, streamlit_ref=st))
 
                 if summary:
                     st.success("Transcript summarized successfully.")
@@ -105,9 +105,8 @@ elif page == "Upload Content":
     elif upload_option == "Raw Text":
         raw_text = st.text_area("Paste your notes here:")
         if raw_text:
-            st.info("Summarizing raw text using Groq...") # Added feedback
-            # *** FIX THIS LINE ***
-            summary = asyncio.run(pdf_processor.summarize_text_async(raw_text, streamlit_ref=st)) # <--- CORRECTED
+            st.info("Summarizing raw text using Groq...")
+            summary = asyncio.run(pdf_processor.summarize_text_async(raw_text, streamlit_ref=st))
 
             if summary:
                 st.success("Notes summarized successfully.")
@@ -123,6 +122,7 @@ elif page == "Quiz Me":
     quiz_type = st.selectbox("Quiz Type", ["MCQ", "Fill in the Blanks", "Short Answer"])
 
     if st.button("Start Quiz"):
+        # Note: quiz_generator.generate_quiz is assumed to be synchronous or handled internally
         quiz = quiz_generator.generate_quiz(topic, difficulty, quiz_type)
         st.write(quiz)
 
@@ -137,14 +137,14 @@ elif page == "Revision Notes":
     view_mode = st.radio("View Mode", ["Quick Summary", "Detailed Notes"])
 
     if st.button("Generate Notes"):
-        # Generate revision notes using the service function
-        revision_notes = generate_revision_notes(selected_topic, view_mode)
+        # Generate revision notes using the service function (must use asyncio.run as it's async)
+        revision_notes = asyncio.run(generate_revision_notes(selected_topic, view_mode))
 
         # Display the generated notes
         st.write(revision_notes)
 
         # PDF generation for download
-        def generate_pdf(notes, file_name="revision_notes.pdf"):
+        def generate_pdf(notes_content, file_name="revision_notes.pdf"): # Renamed notes to notes_content to avoid confusion
             pdf = FPDF()
             pdf.add_page()
 
@@ -155,13 +155,13 @@ elif page == "Revision Notes":
             # Add notes content
             pdf.ln(10)  # Add a line break
             pdf.set_font("Arial", size=12)
-            pdf.multi_cell(0, 10, txt=notes)  # Allows multiline text
+            pdf.multi_cell(0, 10, txt=notes_content)  # Use notes_content here
 
             # Output the file
             pdf.output(file_name)
 
         # Allow user to download the generated notes as a PDF
-        generate_pdf(revision_notes)
+        generate_pdf(revision_notes) # Pass the actual string content
         with open("revision_notes.pdf", "rb") as pdf_file:
             st.download_button(
                 label="Download PDF",
@@ -201,6 +201,7 @@ elif page == "Search & Explore":
 
     if query:
         # Perform semantic search using Groq (implemented in the backend)
+        # Note: search_concept is assumed to be synchronous or handled internally
         search_results = search_concept(query)
         if search_results:
             st.success(f"Top results for: {query}")
