@@ -1,5 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from services.groq_client import client
+import asyncio
 
 def get_video_id(url):
     # Extract video ID from URL
