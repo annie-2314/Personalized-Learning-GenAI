@@ -1,5 +1,6 @@
 import os
-from groq import Groq
+# from groq import Groq
+from groq import AsyncGroq
 from dotenv import load_dotenv
 
 load_dotenv()
