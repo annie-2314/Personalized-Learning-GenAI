@@ -1,4 +1,5 @@
 import fitz  # PyMuPDF
+import asyncio
 from services.groq_client import client  
 
 def extract_text_from_pdf(pdf_file):
