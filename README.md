@@ -1,8 +1,8 @@
 # 📚 Personal Learning Assistant GenAI
 
 An AI-powered interactive learning platform that helps students learn smarter by summarizing YouTube videos, PDFs, and raw text, generating adaptive quizzes and revision notes, and planning spaced repetition-based revisions.
-
-
+## 🚀 Live Demo
+🔗[Launch the Live App](https://annie-2314-personalized-learning-genai-appmain-hpvedw.streamlit.app/)
 ## 📸 Project Screenshots
 | ![ss1](assets/ss1.png) | ![ss2](assets/ss2.png) | ![ss3](assets/ss3.png) | ![ss4](assets/ss4.png) |
 |:----------------------:|:----------------------:|:----------------------:|:----------------------:|
