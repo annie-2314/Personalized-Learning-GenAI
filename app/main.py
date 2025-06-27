@@ -1,5 +1,5 @@
 import base64
-import asyncio
+import asyncio # <--- KEEP THIS IMPORT
 import streamlit as st
 from datetime import datetime
 from services import pdf_processor, youtube_processor, quiz_generator
@@ -14,6 +14,7 @@ from services.spaced_repetition import get_review_schedule, mark_reviewed
 database.initialize_db()
 
 st.set_page_config(page_title="Personalized Learning Coach", layout="wide")
+
 def set_bg_from_local(image_file):
     with open(image_file, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
@@ -36,6 +37,7 @@ def set_bg_from_local(image_file):
 
 # Call with correct path
 set_bg_from_local("app/bg2.png")
+
 # Sidebar
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Dashboard", "Upload Content", "Quiz Me", "Revision Notes", "Spaced Repetition Planner", "Search & Explore"])
@@ -65,23 +67,58 @@ elif page == "Upload Content":
     if upload_option == "PDF":
         uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
         if uploaded_pdf:
+            st.info("Extracting text from PDF, please wait...") # Added feedback
             text = pdf_processor.extract_text_from_pdf(uploaded_pdf)
-            summary = pdf_processor.summarize_text(text)
-            st.success("PDF summarized successfully.")
-            st.write(summary)
+
+            if text: # Only proceed if text was extracted
+                st.info("Text extracted. Summarizing content using Groq...") # Added feedback
+                # *** THIS IS THE CRITICAL CHANGE ***
+                summary = asyncio.run(pdf_processor.summarize_text_async(text, streamlit_ref=st)) # Use async version with asyncio.run()
+
+                if summary: # Only display if summary was successful
+                    st.success("PDF summarized successfully.")
+                    st.write(summary)
+                    # Add code here to save topic if summary successful
+                else:
+                    st.error("Failed to generate PDF summary.")
+            else:
+                st.warning("No text could be extracted from the PDF.")
+
+
     elif upload_option == "YouTube Link":
         yt_link = st.text_input("Paste YouTube Transcript Link:")
         if yt_link:
-            transcript = youtube_processor.fetch_transcript(yt_link)
-            summary = youtube_processor.summarize_transcript(transcript)
-            st.success("Transcript summarized successfully.")
-            st.write(summary)
+            st.info("Fetching YouTube transcript, please wait...") # Added feedback
+            transcript = youtube_processor.fetch_transcript(yt_link, streamlit_ref=st) # Pass streamlit_ref
+
+            if transcript: # Only proceed if transcript was fetched
+                st.info("Transcript fetched. Summarizing content using Groq...") # Added feedback
+                # *** THIS IS THE CRITICAL CHANGE ***
+                summary = asyncio.run(youtube_processor.summarize_transcript_async(transcript, streamlit_ref=st)) # Use async version with asyncio.run()
+
+                if summary: # Only display if summary was successful
+                    st.success("Transcript summarized successfully.")
+                    st.write(summary)
+                    # Add code here to save topic if summary successful
+                else:
+                    st.error("Failed to generate YouTube transcript summary.")
+            else:
+                st.warning("Could not fetch transcript. Please check the URL or if captions are available.") # Improved feedback
+
+
     elif upload_option == "Raw Text":
         raw_text = st.text_area("Paste your notes here:")
         if raw_text:
-            summary = pdf_processor.summarize_text(raw_text)
-            st.success("Notes summarized successfully.")
-            st.write(summary)
+            st.info("Summarizing raw text using Groq...") # Added feedback
+            # *** THIS IS THE CRITICAL CHANGE ***
+            summary = asyncio.run(pdf_processor.summarize_text_async(raw_text, streamlit_ref=st)) # Use async version with asyncio.run()
+
+            if summary: # Only display if summary was successful
+                st.success("Notes summarized successfully.")
+                st.write(summary)
+                # Add code here to save topic if summary successful
+            else:
+                st.error("Failed to generate raw text summary.")
 
 # Page: Quiz Me
 elif page == "Quiz Me":
@@ -95,22 +132,19 @@ elif page == "Quiz Me":
         st.write(quiz)
 
 # Page: Revision Notes
-
-
-# Page: Revision Notes
 elif page == "Revision Notes":
     st.title("📝 Revision Notes")
-    
+
     # Get user input for topic
     selected_topic = st.text_input("Enter Topic")
-    
+
     # Select view mode (Quick Summary or Detailed Notes)
     view_mode = st.radio("View Mode", ["Quick Summary", "Detailed Notes"])
 
     if st.button("Generate Notes"):
         # Generate revision notes using the service function
         revision_notes = generate_revision_notes(selected_topic, view_mode)
-        
+
         # Display the generated notes
         st.write(revision_notes)
 
@@ -118,7 +152,7 @@ elif page == "Revision Notes":
         def generate_pdf(notes, file_name="revision_notes.pdf"):
             pdf = FPDF()
             pdf.add_page()
-            
+
             # Add title
             pdf.set_font("Arial", size=16)
             pdf.cell(200, 10, txt="Revision Notes", ln=True, align="C")
@@ -179,6 +213,3 @@ elif page == "Search & Explore":
                 st.markdown(f"- {result}")
         else:
             st.warning("No relevant results found.")
-
-
-
