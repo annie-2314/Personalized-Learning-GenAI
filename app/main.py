@@ -1,4 +1,5 @@
 import base64
+import asyncio
 import streamlit as st
 from datetime import datetime
 from services import pdf_processor, youtube_processor, quiz_generator
