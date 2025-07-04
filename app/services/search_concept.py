@@ -1,20 +1,18 @@
-# from groq import client
-from services.groq_client import client
+from .groq_client import client
 
 def search_concept(query):
-    # Use Groq's embeddings to perform a semantic search
     try:
-        # Create a prompt with the query
         response = client.chat.completions.create(
             model="meta-llama/llama-4-scout-17b-16e-instruct",
             messages=[
-                {"role": "system", "content": "Perform a semantic search."},
+                {"role": "system", "content": "Provide a single, continuous paragraph explanation without bullet points, lists, numbering, or special characters that could be split into individual characters. Ensure the response is plain text suitable for direct display."},
                 {"role": "user", "content": f"Find relevant explanations or concepts for: {query}"}
             ]
         )
-        # Extract results from the response
-        search_results = response.choices[0].message.content.strip().split('\n')
+        search_results = response.choices[0].message.content.strip().replace('\n', ' ').replace('\r', ' ')
+        print("DEBUG: search_concept output type:", type(search_results))
+        print("DEBUG: search_concept output:", repr(search_results))
         return search_results
     except Exception as e:
         print(f"Error performing semantic search: {e}")
-        return []
+        return ""

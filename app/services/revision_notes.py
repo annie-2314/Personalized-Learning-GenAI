@@ -1,4 +1,5 @@
-from services.groq_client import client
+# from services.groq_client import client
+from .groq_client import client
 
 def generate_revision_notes(topic, view_mode):
     """
