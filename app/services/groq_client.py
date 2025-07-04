@@ -18,4 +18,8 @@ if not GROQ_API_KEY:
 from groq import Groq
 
 # Initialize the Groq client
+<<<<<<< HEAD
 client = Groq(api_key=GROQ_API_KEY)
+=======
+client = Groq(api_key=GROQ_API_KEY)
+>>>>>>> ba5cb1dafa4d62067bf7c94e37ca17d73ff9ab46
