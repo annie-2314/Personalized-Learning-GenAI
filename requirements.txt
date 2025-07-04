@@ -1,8 +1,3 @@
-streamlit
-python-dotenv
-groq
-PyMuPDF
-youtube_transcript_api
 streamlit==1.39.0
 python-dotenv==1.0.1
 groq==0.11.0
@@ -11,13 +6,5 @@ youtube_transcript_api==0.6.2
 fpdf==1.7.2
 plotly==5.24.1
 pandas==2.2.3
-<<<<<<< HEAD
-=======
-fpdf==1.7.2
-PyMuPDF
-langchain-text-splitters
-youtube-transcript-api
-fpdf
-langchain
-
->>>>>>> ba5cb1dafa4d62067bf7c94e37ca17d73ff9ab46
+langchain==0.3.3
+langchain-text-splitters==0.3.0
