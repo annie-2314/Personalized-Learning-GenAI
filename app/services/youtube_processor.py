@@ -2,6 +2,7 @@ import re
 import asyncio
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, VideoUnavailable
 from groq import APIStatusError, RateLimitError
+from xml.etree.ElementTree import ParseError
 from .groq_client import client as groq_async_client
 
 def extract_video_id(url):
@@ -14,7 +15,7 @@ def extract_video_id(url):
         return None
 
 async def get_transcript(url, retries=3, delay=2):
-    """Fetches the transcript for a YouTube video."""
+    """Fetches the transcript for a YouTube video with retries."""
     video_id = extract_video_id(url)
     if not video_id:
         return None, "Invalid YouTube URL."
@@ -29,6 +30,11 @@ async def get_transcript(url, retries=3, delay=2):
             return None, f"Transcripts are disabled for video ID: {video_id}."
         except VideoUnavailable:
             return None, f"Video ID {video_id} is unavailable."
+        except ParseError:
+            if attempt < retries - 1:
+                await asyncio.sleep(delay * (2 ** attempt))  # Exponential backoff
+                continue
+            return None, "Failed to fetch transcript due to invalid API response (parsing error)."
         except Exception as e:
             if attempt < retries - 1:
                 await asyncio.sleep(delay * (2 ** attempt))  # Exponential backoff

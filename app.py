@@ -137,7 +137,7 @@ elif page == "Upload Content":
                 except Exception as e:
                     st.error(f"Failed to summarize PDF: {e}")
             else:
-                st.error("No text extracted from PDF.")
+                st.error("No text extracted from PDF. Please upload a valid PDF.")
 
     elif upload_option == "YouTube Link":
         youtube_url = st.text_input("Enter YouTube URL:")
@@ -159,9 +159,10 @@ elif page == "Upload Content":
                     except Exception as e:
                         st.error(f"Failed to summarize YouTube transcript: {e}")
                 else:
-                    st.error(error or "No transcript available for this video. Try another video or use Raw Text to paste notes.")
+                    st.error(error or "Unable to fetch transcript for this video. Try another video or paste notes in the Raw Text section below.")
+                    st.markdown("[Search for videos with transcripts enabled](https://www.youtube.com/results?search_query=educational+lecture)")
             else:
-                st.error("Invalid YouTube URL. Please provide a valid URL (e.g., https://youtu.be/VIDEO_ID).")
+                st.error("Invalid YouTube URL. Please use a format like https://youtu.be/VIDEO_ID.")
 
     elif upload_option == "Raw Text":
         raw_text = st.text_area("Paste your notes here:")
@@ -178,7 +179,6 @@ elif page == "Upload Content":
                         st.warning("Please enter a topic name.")
             except Exception as e:
                 st.error(f"Failed to summarize text: {e}")
-
 # Page: Quiz Me
 elif page == "Quiz Me":
     st.title("🧠 Personalized Quiz")
