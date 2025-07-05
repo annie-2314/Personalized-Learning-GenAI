@@ -8,4 +8,8 @@ plotly==5.24.1
 pandas==2.2.3
 langchain==0.3.3
 langchain-text-splitters==0.3.0
+<<<<<<< HEAD
 httpx==0.23.0
+=======
+httpx==0.23.0
+>>>>>>> 5c0a995a46a3d995e5749ccc7f51431ee995278d
