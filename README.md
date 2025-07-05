@@ -1,68 +1,208 @@
-# 📚 Personal Learning Assistant GenAI
+markdown
+# 📚 Personalized Learning Coach
 
-An AI-powered interactive learning platform that helps students learn smarter by summarizing YouTube videos, PDFs, and raw text, generating adaptive quizzes and revision notes, and planning spaced repetition-based revisions.
-## 🚀 Live Demo
-🔗[Launch the Live App](https://annie-2314-personalized-learning-genai-appmain-hpvedw.streamlit.app/)
-## 📸 Project Screenshots
-| ![ss1](assets/ss1.png) | ![ss2](assets/ss2.png) | ![ss3](assets/ss3.png) | ![ss4](assets/ss4.png) |
-|:----------------------:|:----------------------:|:----------------------:|:----------------------:|
-| **PDF Summarizer**     | **YouTube Link Summarizer** | **Quiz Questions Generator** | **Medium Quiz** |
+A web-based application built with **Streamlit** and powered by **Groq AI**, designed to enhance learning through personalized quizzes, revision notes, spaced repetition, and content summarization.
 
-| ![ss5](assets/ss5.png) | ![ss6](assets/ss6.png) | ![ss7](assets/ss7.png) |
-|:----------------------:|:----------------------:|:----------------------:|
-| **Revision Notes**     | **Assistant**           | **Dashboard**           |
-
-
-## 📹 Demo Video
-[Download Video](assests/demo video.mp4)
-
-
-🚀 Key Features
-🔹 📥 Multi-Format Input & Smart Summarization
-→ Upload YouTube links, PDF documents, or raw text
-→ AI summarizes key concepts using advanced LLMs
-
-🔹 🧠 Personalized Quiz Generator
-→ Auto-generates MCQs, Fill-in-the-Blanks, and Short Answers
-→ Adapts difficulty (Easy, Medium, Hard) based on content depth
-
-🔹 📝 AI-Powered Revision Notes
-→ Instant generation of short summaries or detailed notes
-→ Supports PDF download for offline access
-
-🔹 ⏰ Spaced Repetition Scheduler
-→ Tracks learning timelines and retention
-→ Recommends optimal revision time using memory decay algorithms
-
-🔹 🔍 Semantic Search Engine
-→ Search learned concepts using embeddings
-→ Returns similar topics even if phrased differently
-
-🔹 🤖 AI Assistant Panel
-→ Chat-like in-app support for summarizing, explaining, or reviewing content
-→ Available throughout the learning experience
----
-
-## 🧠 Tech Stack
-
-| Layer                  | Technologies Used                                |
-| ---------------------- | ------------------------------------------------ |
-| **Frontend**           | [Streamlit](https://streamlit.io)                |
-| **Backend**            | FastAPI *(planned for production deployment)*    |
-| **GenAI Engine**       | Groq Cloud + LLaMA 4 Scout 17B Instruct Model    |
-| **Summarization**      | LLM-based abstraction via API                    |
-| **Quiz Generation**    | Prompt-driven custom question generation         |
-| **Search & Embedding** | Vector similarity with semantic matching         |
-| **Database**           | SQLite *(user progress, topics, review history)* |
-
+The app supports uploading learning materials (PDFs, YouTube links, or raw text), tracking progress, and exploring concepts — ideal for students and lifelong learners.
 
 ---
 
-## 🖼️ UI Highlights
+## 🚀 Live App
 
-- 🏠 Dashboard Overview – Visualizes retention metrics and learning progress 
-- 📤 Upload Panel – Accepts PDFs, YouTube links, or text for summarization
-- 🧠 Quiz Section – Generates personalized quizzes by topic and difficulty
-- 📝 Notes Generator – Creates downloadable revision notes (PDF format)
-- 🔁 Review Planner – Spaced repetition scheduler with memory tracking
-- 🔍 Semantic Search – Finds learned concepts using vector embeddings
+> [🌐 Access Personalized Learning Coach](https://personalized-learning-genai-ftdujvmnmtevwcdjk8gcky.streamlit.app/)  
+
+---
+
+## ✨ Features
+
+### 👤 Create Account
+- Users can create unique accounts to store personalized learning data and track their review schedules.
+
+![Create Account](assets/createacc.png)
+
+---
+
+### 📊 Dashboard
+- Displays key metrics:  
+  - Total topics learned  
+  - Average memory retention  
+  - Pending reviews  
+
+![Dashboard](assets/dashboard.png)
+
+---
+
+### 📤 Upload Content
+Supports three types of learning material:
+
+- **📄 PDF**: Extracts and summarizes content.
+- **🎥 YouTube**: Fetches transcripts and summarizes videos.
+- **📝 Raw Text**: Summarizes pasted notes.
+
+Users can add these summaries to their spaced repetition review list.
+
+![Upload PDF](assets/upload_pdf.png)  
+![Upload YouTube](assets/upload_yt.png)  
+<!-- ![Upload Text](assets/upload_text.png) -->
+
+---
+
+### 🧠 Quiz Me
+- Generates personalized quizzes on user-defined topics with adjustable:
+  - Difficulty: Easy / Medium / Hard  
+  - Type: MCQ / Fill in the Blanks / Short Answer  
+- Tracks answers and updates memory level.
+
+![Quiz Generator](assets/quiz.png)
+
+---
+
+### 📝 Revision Notes
+- Creates quick or detailed AI-generated revision notes for any topic.
+- Users can download the notes as a formatted PDF.
+
+![Revision Notes](assets/revision_notes.png)
+
+---
+
+### ⏳ Spaced Repetition Planner
+- Suggests reviews based on spaced repetition logic (Today / Tomorrow / Later).
+- Tracks your daily learning streak.
+
+![Spaced Repetition](assets/spaced_repetition.png)
+
+---
+
+### 📈 Progress Tracker
+- Visualizes:
+  - Topics learned over time (line chart)
+  - Memory retention distribution (bar chart)
+
+![Progress Tracker](assets/progress_tracker.png)
+
+---
+
+### 🔍 Search & Explore
+- Users can ask questions or search concepts.
+- Powered by Groq AI to return rich explanations or summaries.
+
+![Search Explore](assets/search_explorer.png)
+
+---
+
+## ⚙ Getting Started
+
+### ✅ Prerequisites
+
+- Python 3.8+
+- Git
+- Groq API key
+- (Optional) Streamlit Community Cloud account for deployment
+
+---
+
+### 📦 Installation
+
+bash
+git clone https://github.com/annie-2314/Personalized-Learning-GenAI.git
+cd Personalized-Learning-GenAI
+```
+
+```bash
+pip install -r requirements.txt
+```
+
+```bash
+# Set your Groq API Key
+echo "GROQ_API_KEY=your-api-key-here" > .env
+```
+
+```bash
+# Run the app
+streamlit run app.py
+
+
+---
+
+## ☁ Deployment (Streamlit Cloud)
+
+1. Push your code to GitHub:
+
+bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+
+2. Go to [Streamlit Cloud](https://streamlit.io/cloud):
+
+- Connect your GitHub repo  
+- Set `app.py` as the main file  
+- Add your **GROQ_API_KEY** in **Secrets**  
+- Deploy
+
+---
+
+## 📚 Dependencies
+
+Listed in `requirements.txt`:
+
+
+streamlit==1.39.0
+python-dotenv==1.0.1
+groq==0.11.0
+PyMuPDF==1.24.10
+youtube_transcript_api==0.6.2
+fpdf==1.7.2
+plotly==5.24.1
+pandas==2.2.3
+langchain==0.3.3
+langchain-text-splitters==0.3.0
+httpx==0.23.0
+
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions!  
+To contribute:
+
+1. Fork the repo  
+2. Create a new feature branch  
+3. Submit a pull request
+
+---
+
+## 📂 Folder Structure
+
+
+.
+├── app.py
+├── assets/
+│   ├── create_account.png
+│   ├── dashboard.png
+│   ├── upload_pdf.png
+│   ├── upload_youtube.png
+│   ├── upload_text.png
+│   ├── quiz_generator.png
+│   ├── revision_notes.png
+│   ├── spaced_repetition.png
+│   ├── progress_tracker.png
+│   └── search_explore.png
+├── app/
+│   ├── services/
+│   │   ├── pdf_processor.py
+│   │   ├── youtube_processor.py
+│   │   ├── quiz_generator.py
+│   │   ├── revision_notes.py
+│   │   └── search_concept.py
+│   └── utils/
+│       └── database.py
+├── data/
+│   └── database.db
+├── requirements.txt
+└── .env
+
+
+---

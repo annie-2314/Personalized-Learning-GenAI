@@ -1,3 +1,6 @@
+import asyncio
+import io
+import fitz
 import sys
 import os
 import base64
@@ -7,6 +10,7 @@ from fpdf import FPDF
 import plotly.express as px
 import pandas as pd
 import sqlite3
+
 
 # --- IMPORTANT IMPORTS ---
 from app.services import pdf_processor, youtube_processor, quiz_generator
@@ -119,46 +123,61 @@ elif page == "Upload Content":
         uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
         if uploaded_pdf:
             text = pdf_processor.extract_text_from_pdf(uploaded_pdf)
-            summary = pdf_processor.summarize_text(text)
-            st.success("PDF summarized successfully.")
-            st.write(summary)
-            topic_name = st.text_input("Enter a brief topic name for review:", key="pdf_topic_input")
-            if st.button("Add to Review List", key="add_pdf_topic_button"):
-                if topic_name:
-                    db_utils.add_topic(st.session_state.user_name, topic_name)
-                    st.success(f"'{topic_name}' added to your review schedule with memory level 100!")
-                else:
-                    st.warning("Please enter a topic name.")
+            if text:
+                try:
+                    summary = asyncio.run(pdf_processor.summarize_text_async(text))
+                    st.write(summary)  # Show only the summary
+                    topic_name = st.text_input("Enter a brief topic name for review:", key="pdf_topic_input")
+                    if st.button("Add to Review List", key="add_pdf_topic_button"):
+                        if topic_name:
+                            db_utils.add_topic(st.session_state.user_name, topic_name)
+                            st.success(f"'{topic_name}' added to your review schedule with memory level 100!")
+                        else:
+                            st.warning("Please enter a topic name.")
+                except Exception as e:
+                    st.error(f"Failed to summarize PDF: {e}")
+            else:
+                st.error("No text extracted from PDF.")
 
     elif upload_option == "YouTube Link":
-        yt_link = st.text_input("Paste YouTube Transcript Link:")
-        if yt_link:
-            transcript = youtube_processor.fetch_transcript(yt_link)
-            if transcript:
-                summary = youtube_processor.summarize_transcript(transcript)
-                st.success("Transcript summarized successfully.")
+        youtube_url = st.text_input("Enter YouTube URL:")
+        if youtube_url:
+            video_id = youtube_processor.extract_video_id(youtube_url)
+            if video_id:
+                transcript, error = asyncio.run(youtube_processor.get_transcript(youtube_url))
+                if transcript:
+                    try:
+                        summary = asyncio.run(youtube_processor.summarize_transcript(transcript))
+                        st.write(summary)
+                        topic_name = st.text_input("Enter a brief topic name for review:", key="youtube_topic_input")
+                        if st.button("Add to Review List", key="add_youtube_topic_button"):
+                            if topic_name:
+                                db_utils.add_topic(st.session_state.user_name, topic_name)
+                                st.success(f"'{topic_name}' added to your review schedule with memory level 100!")
+                            else:
+                                st.warning("Please enter a topic name.")
+                    except Exception as e:
+                        st.error(f"Failed to summarize YouTube transcript: {e}")
+                else:
+                    st.error(error or "No transcript available for this video.")
+            else:
+                st.error("Invalid YouTube URL.")
+
+    elif upload_option == "Raw Text":
+        raw_text = st.text_area("Paste your notes here:")
+        if raw_text:
+            try:
+                summary = asyncio.run(pdf_processor.summarize_text_async(raw_text))
                 st.write(summary)
-                topic_name = st.text_input("Enter a brief topic name for review:", key="yt_topic_input")
-                if st.button("Add to Review List", key="add_yt_topic_button"):
+                topic_name = st.text_input("Enter a brief topic name for review:", key="raw_text_topic_input")
+                if st.button("Add to Review List", key="add_raw_text_topic_button"):
                     if topic_name:
                         db_utils.add_topic(st.session_state.user_name, topic_name)
                         st.success(f"'{topic_name}' added to your review schedule with memory level 100!")
                     else:
                         st.warning("Please enter a topic name.")
-
-    elif upload_option == "Raw Text":
-        raw_text = st.text_area("Paste your notes here:")
-        if raw_text:
-            summary = pdf_processor.summarize_text(raw_text)
-            st.success("Notes summarized successfully.")
-            st.write(summary)
-            topic_name = st.text_input("Enter a brief topic name for review:", key="raw_text_topic_input")
-            if st.button("Add to Review List", key="add_raw_text_topic_button"):
-                if topic_name:
-                    db_utils.add_topic(st.session_state.user_name, topic_name)
-                    st.success(f"'{topic_name}' added to your review schedule with memory level 100!")
-                else:
-                    st.warning("Please enter a topic name.")
+            except Exception as e:
+                st.error(f"Failed to summarize text: {e}")
 
 # Page: Quiz Me
 elif page == "Quiz Me":
@@ -169,7 +188,9 @@ elif page == "Quiz Me":
 
     if st.button("Start Quiz"):
         if topic:
-            quiz = quiz_generator.generate_quiz(topic, difficulty, quiz_type)
+            # quiz = quiz_generator.generate_quiz(topic, difficulty, quiz_type)
+            quiz = asyncio.run(quiz_generator.generate_quiz(topic, difficulty, quiz_type))
+
             if quiz and isinstance(quiz, list) and len(quiz) == 5:
                 st.session_state.quiz = quiz
                 st.session_state.user_answers = {}
@@ -228,29 +249,49 @@ elif page == "Quiz Me":
             st.session_state.quiz_submitted = True
     elif st.session_state.get("quiz_submitted", False):
         st.info("Quiz submitted! Start a new quiz to continue.")
-
 # Page: Revision Notes
 elif page == "Revision Notes":
+    import inspect
     st.title("📝 Revision Notes")
     selected_topic = st.text_input("Enter Topic")
     view_mode = st.radio("View Mode", ["Quick Summary", "Detailed Notes"])
 
     if st.button("Generate Notes"):
-        if selected_topic:
-            revision_notes = generate_revision_notes(selected_topic, view_mode)
-            st.write(revision_notes)
+        if not selected_topic:
+            st.warning("Please enter a topic.")
+            st.stop()
 
-            def generate_pdf(notes, file_name="revision_notes.pdf"):
+        try:
+            # ✅ RUN the coroutine properly
+            result = generate_revision_notes(selected_topic, view_mode)
+            if inspect.iscoroutine(result):
+                notes = asyncio.run(result)
+            else:
+                notes = result
+
+            # ✅ Check if notes is a valid string
+            if not isinstance(notes, str):
+                st.error("Generated notes are not in string format.")
+                st.stop()
+
+            # ✅ Display on screen
+            st.success("Notes generated successfully!")
+            st.write(notes)
+
+            # ✅ Generate downloadable PDF
+            from fpdf import FPDF
+
+            def generate_pdf(content, filename="revision_notes.pdf"):
                 pdf = FPDF()
                 pdf.add_page()
                 pdf.set_font("Arial", size=16)
                 pdf.cell(200, 10, txt="Revision Notes", ln=True, align="C")
                 pdf.ln(10)
                 pdf.set_font("Arial", size=12)
-                pdf.multi_cell(0, 10, txt=notes)
-                pdf.output(file_name)
+                pdf.multi_cell(0, 10, txt=content)
+                pdf.output(filename)
 
-            generate_pdf(revision_notes)
+            generate_pdf(notes)
             with open("revision_notes.pdf", "rb") as pdf_file:
                 st.download_button(
                     label="Download PDF",
@@ -258,8 +299,10 @@ elif page == "Revision Notes":
                     file_name="revision_notes.pdf",
                     mime="application/pdf"
                 )
-        else:
-            st.warning("Please enter a topic.")
+
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+
 
 # Page: Spaced Repetition Planner
 elif page == "Spaced Repetition Planner":
@@ -315,11 +358,14 @@ elif page == "Search & Explore":
     st.title("🔍 Explore Past Material")
     query = st.text_input("Ask something or search a concept:")
     if query:
-        search_results = search_concept(query)
-        print("DEBUG: app.py search_results type:", type(search_results))
-        print("DEBUG: app.py search_results:", repr(search_results))
-        if isinstance(search_results, str) and search_results.strip():
-            st.success(f"Top results for: {query}")
-            st.write(search_results)
-        else:
-            st.warning(f"No relevant results found or invalid output: {search_results}")
+        try:
+            search_results = asyncio.run(search_concept(query))
+            if isinstance(search_results, str) and search_results.strip():
+                st.success(f"Top results for: {query}")
+                st.write(search_results)
+            else:
+                st.warning(f"No relevant results found or invalid output: {search_results}")
+        except Exception as e:
+            st.error(f"Failed to retrieve information: {e}")
+
+
