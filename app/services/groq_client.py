@@ -1,3 +1,4 @@
+from groq import AsyncGroq
 import os
 # import streamlit as st # <-- Optionally remove this if 'st' is truly not used elsewhere in THIS specific file
 from dotenv import load_dotenv # <-- Make sure this line is here
@@ -18,4 +19,4 @@ if not GROQ_API_KEY:
 from groq import Groq
 
 # Initialize the Groq client
-client = Groq(api_key=GROQ_API_KEY)
+client = AsyncGroq(api_key=GROQ_API_KEY)
