@@ -159,9 +159,9 @@ elif page == "Upload Content":
                     except Exception as e:
                         st.error(f"Failed to summarize YouTube transcript: {e}")
                 else:
-                    st.error(error or "No transcript available for this video.")
+                    st.error(error or "No transcript available for this video. Try another video or use Raw Text to paste notes.")
             else:
-                st.error("Invalid YouTube URL.")
+                st.error("Invalid YouTube URL. Please provide a valid URL (e.g., https://youtu.be/VIDEO_ID).")
 
     elif upload_option == "Raw Text":
         raw_text = st.text_area("Paste your notes here:")
