@@ -1,17 +1,6 @@
-markdown
 # 📚 Personalized Learning Coach
 
-<<<<<<< HEAD
 A web-based application built with **Streamlit** and powered by **Groq AI**, designed to enhance learning through personalized quizzes, revision notes, spaced repetition, and content summarization.
-=======
-An AI-powered interactive learning platform that helps students learn smarter by summarizing YouTube videos, PDFs, and raw text, generating adaptive quizzes and revision notes, and planning spaced repetition-based revisions.
-## 🚀 Live Demo
-🔗[Launch the Live App](https://personalized-learning-genai-ftdujvmnmtevwcdjk8gcky.streamlit.app/)
-## 📸 Project Screenshots
-| ![ss1](assets/ss1.png) | ![ss2](assets/ss2.png) | ![ss3](assets/ss3.png) | ![ss4](assets/ss4.png) |
-|:----------------------:|:----------------------:|:----------------------:|:----------------------:|
-| **PDF Summarizer**     | **YouTube Link Summarizer** | **Quiz Questions Generator** | **Medium Quiz** |
->>>>>>> 5c0a995a46a3d995e5749ccc7f51431ee995278d
 
 The app supports uploading learning materials (PDFs, YouTube links, or raw text), tracking progress, and exploring concepts — ideal for students and lifelong learners.
 
