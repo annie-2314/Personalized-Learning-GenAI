@@ -1,5 +1,6 @@
 import asyncio
 import io
+import logging
 import fitz
 import sys
 import os
@@ -158,9 +159,12 @@ elif page == "Upload Content":
                                 st.warning("Please enter a topic name.")
                     except Exception as e:
                         st.error(f"Failed to summarize YouTube transcript: {e}")
+                        logging.error(f"Summarization failed for video ID {video_id}: {str(e)}")
                 else:
                     st.error(error or "Unable to fetch transcript for this video. Try another video or paste notes in the Raw Text section below.")
                     st.markdown("[Search for videos with transcripts enabled](https://www.youtube.com/results?search_query=educational+lecture)")
+                    if error:
+                        logging.warning(f"Transcript fetch failed for video ID {video_id}: {error}")
             else:
                 st.error("Invalid YouTube URL. Please use a format like https://youtu.be/VIDEO_ID.")
 

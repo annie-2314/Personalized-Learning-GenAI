@@ -1,0 +1,3 @@
+INFO:root:Successfully fetched transcript for video ID: EDb37y_MhRw
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully summarized transcript.
