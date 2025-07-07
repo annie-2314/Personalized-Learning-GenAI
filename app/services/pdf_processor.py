@@ -64,7 +64,7 @@ async def summarize_text_async(text, retries=3, delay=2):
     tasks = []
     for i, chunk in enumerate(chunks):
         tasks.append(_summarize_chunk_async(chunk, i + 1, len(chunks), retries, delay))
-
+ 
     chunk_summaries = await asyncio.gather(*tasks)
     chunk_summaries = [s for s in chunk_summaries if s is not None]
 

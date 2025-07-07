@@ -264,27 +264,18 @@ elif page == "Revision Notes":
         if not selected_topic:
             st.warning("Please enter a topic.")
             st.stop()
-
         try:
-            # ✅ RUN the coroutine properly
             result = generate_revision_notes(selected_topic, view_mode)
             if inspect.iscoroutine(result):
                 notes = asyncio.run(result)
             else:
                 notes = result
-
-            # ✅ Check if notes is a valid string
             if not isinstance(notes, str):
                 st.error("Generated notes are not in string format.")
                 st.stop()
-
-            # ✅ Display on screen
             st.success("Notes generated successfully!")
             st.write(notes)
-
-            # ✅ Generate downloadable PDF
             from fpdf import FPDF
-
             def generate_pdf(content, filename="revision_notes.pdf"):
                 pdf = FPDF()
                 pdf.add_page()
@@ -294,7 +285,6 @@ elif page == "Revision Notes":
                 pdf.set_font("Arial", size=12)
                 pdf.multi_cell(0, 10, txt=content)
                 pdf.output(filename)
-
             generate_pdf(notes)
             with open("revision_notes.pdf", "rb") as pdf_file:
                 st.download_button(
@@ -303,10 +293,8 @@ elif page == "Revision Notes":
                     file_name="revision_notes.pdf",
                     mime="application/pdf"
                 )
-
         except Exception as e:
             st.error(f"❌ Error: {e}")
-
 
 # Page: Spaced Repetition Planner
 elif page == "Spaced Repetition Planner":
@@ -337,23 +325,32 @@ elif page == "Spaced Repetition Planner":
 # Page: Progress Tracker
 elif page == "Progress Tracker":
     st.title("📈 Progress Tracker")
+    show_debug = st.checkbox("Show Debug Information", value=False, help="Display internal data for debugging.")
     topics = db_utils.get_all_topics(st.session_state.user_name)
     if topics:
-        # Prepare data for charts
         df = pd.DataFrame(topics, columns=["user_name", "topic_name", "memory_level", "last_reviewed", "next_review"])
-        df["last_reviewed"] = pd.to_datetime(df["last_reviewed"])
+        df["last_reviewed"] = pd.to_datetime(df["last_reviewed"], errors="coerce")
+        df = df.dropna(subset=["last_reviewed"])
         
-        # Line chart: Topics learned over time
         df["date"] = df["last_reviewed"].dt.date
         topic_counts = df.groupby("date").size().reset_index(name="count")
-        fig1 = px.line(topic_counts, x="date", y="count", title="Topics Learned Over Time")
-        st.plotly_chart(fig1)
-
-        # Bar chart: Memory retention distribution
+        
+        if not topic_counts.empty and topic_counts["count"].sum() > 0:
+            fig1 = px.line(topic_counts, x="date", y="count", title="Topics Learned Over Time", markers=True)
+            st.plotly_chart(fig1)
+        else:
+            st.warning("No valid data or variation in dates for Topics Learned Over Time chart.")
+        
         memory_bins = pd.cut(df["memory_level"], bins=[0, 25, 50, 75, 100], labels=["0-25%", "26-50%", "51-75%", "76-100%"])
         memory_dist = memory_bins.value_counts().sort_index()
         fig2 = px.bar(x=memory_dist.index, y=memory_dist.values, title="Memory Retention Distribution", labels={"x": "Memory Level", "y": "Number of Topics"})
         st.plotly_chart(fig2)
+        
+        if show_debug:
+            st.write("Debug: Processed DataFrame", df)
+            st.write("Debug: Topic Counts", topic_counts)
+            st.write("Debug: Unique Dates", topic_counts["date"].unique())
+            st.write("Debug: Count Values", topic_counts["count"].values)
     else:
         st.info("No topics available to display progress. Start learning to see your progress!")
 

@@ -1,3 +1,38 @@
 INFO:root:Successfully fetched transcript for video ID: EDb37y_MhRw
 INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
 INFO:root:Successfully summarized transcript.
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully fetched transcript for video ID: NRmAXDWJVnU
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.414625 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully summarized transcript.
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.385558 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.377107 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.393904 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.414598 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.484454 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully generated quiz for Database
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.468501 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully generated quiz for Database
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.497168 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.422254 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.460477 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully generated quiz for Database
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.487826 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully generated quiz for Database
+INFO:root:Successfully fetched transcript for video ID: NRmAXDWJVnU
+INFO:groq._base_client:Retrying request to /openai/v1/chat/completions in 0.464209 seconds
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Successfully summarized transcript.

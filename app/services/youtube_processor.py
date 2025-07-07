@@ -6,7 +6,6 @@ from groq import APIStatusError, RateLimitError
 from xml.etree.ElementTree import ParseError
 from .groq_client import client as groq_async_client
 
-# Configure logging for live app debugging
 logging.basicConfig(level=logging.INFO, filename='app_logs.log')
 
 def extract_video_id(url):
